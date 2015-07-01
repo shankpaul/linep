@@ -13,9 +13,9 @@ var conf = {
 }
 
 FB.options({
-    appId:          '813365648728696',
-    appSecret:      'd1698fb5172c726fdbb7b4642d90f2ba',
-    redirectUri:    'http://localhost:3001/auth'
+  appId:          '813365648728696',
+  appSecret:      'd1698fb5172c726fdbb7b4642d90f2ba',
+  redirectUri:    'http://localhost:3001/auth'
 });
 
 server.listen(3001);
@@ -25,17 +25,31 @@ server.listen(3001);
 
 //Root location
 app.get('/',function(req,res){
- 
-      res.redirect(FB.getLoginUrl({ scope: 'user_about_me' }));       
-   
+
+ res.redirect(FB.getLoginUrl({ scope: 'user_about_me' }));       
+
    		// res.sendfile(__dirname + '/index.html');
-  });
+
+
+
+
+    });
 
 app.get('/auth',function(req,res){
-
-   var code            = req.query.code;
-   console.log(code);
-
+     var code            = req.query.code;
+     console.log(code);
+     FB.setAccessToken(code);
+     // 
+     console.log(FB.api);
+      FB.api('me/friends', {
+        fields:         'name,picture',
+        limit:          250,
+        access_token:   code
+    }, function (result) {
+        
+         console.log(result);
+    });
+      res.sendfile(__dirname + '/index.html');
 })
 
 io.sockets.on('connection',function(socket){
